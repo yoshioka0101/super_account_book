@@ -7,12 +7,14 @@
     "dev": "bun --watch index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "^1.1.6"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "hono": "^4.4.10"
+    "@hono/zod-validator": "^0.2.2",
+    "hono": "^4.4.10",
+    "zod": "^3.23.8"
   }
 }
