@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
-import { expensesRoutes } from './routes/expenses'
+import { expensesRoutes } from './server/routes/expenses'
 
 
 const app = new Hono()
