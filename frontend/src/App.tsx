@@ -1,6 +1,5 @@
 import './index.css';
 import { useEffect, useState } from 'react'
-// import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -14,8 +13,17 @@ function App() {
   const [totalSpent, setTotalSpent] = useState(0)
 
   useEffect(() => {
-    fetch("/api/expenses/total-spent")
-  }, [])
+    async function fetchTotal() {
+      try {
+        const res = await fetch("/api/expenses/total-spent")
+        const data = await res.json();
+        setTotalSpent(data.total);
+      } catch (error) {
+        console.error("Error fetching total spent:", error)
+      }
+    }
+    fetchTotal();
+  }, []);
 
   return (
     <Card className="w-[350px] m-auto">
