@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <div className='flex flex-col'>
+      <div className='flex flex-col bg-background max-w-md m-auto gap-y-5'>
         <Button onClick={() => setCount((count) => count + 1)}>
           up
         </Button>
@@ -18,9 +18,6 @@ function App() {
           {count}
          </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
