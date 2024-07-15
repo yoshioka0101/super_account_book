@@ -11,6 +11,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@server/*": [
+        "../server/*"
       ]
     },
 
@@ -29,5 +32,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
-  }
+  },
+  "include": ["src", "server"]
+
 }
