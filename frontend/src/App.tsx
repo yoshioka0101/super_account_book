@@ -9,13 +9,18 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { hc } from 'hono/client'
+import { type ApiRoutes } from "../../server/app"
+
+const client = hc<ApiRoutes>('/')
+
 function App() {
   const [totalSpent, setTotalSpent] = useState(0)
 
   useEffect(() => {
     async function fetchTotal() {
       try {
-        const res = await fetch("/api/expenses/total-spent")
+        const res = await client.api.expenses("total-spent").$get()
         const data = await res.json();
         setTotalSpent(data.total);
       } catch (error) {

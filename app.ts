@@ -12,9 +12,10 @@ app.get("/test", c => {
     return c.json({"message": "test"})
 } )
 
-app.route("/api/expenses", expensesRoutes)
+const apiRoutes = app.basePath("/api").route("/expenses", expensesRoutes)
 
 app.use('*', serveStatic({ root: './frontend/dist' }))
 app.get('*', serveStatic({ path: './frontend/dist/index.html' }))
 
 export default app // for Cloudflare Workers or Bun
+export type ApiRoutes = typeof apiRoutes
