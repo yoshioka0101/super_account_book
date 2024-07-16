@@ -1,5 +1,5 @@
 import './index.css';
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -7,19 +7,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+
+import { hc } from 'hono/client';
+import { type ApiRoutes } from "@server/app";
+
+const client = hc<ApiRoutes>('/');
 
 function App() {
-  const [totalSpent, setTotalSpent] = useState(0)
+  const [totalSpent, setTotalSpent] = useState(0);
 
   useEffect(() => {
     async function fetchTotal() {
       try {
-        const res = await fetch("/api/expenses/total-spent")
+        const res = await client.api.expenses("total-spent").$get();
         const data = await res.json();
         setTotalSpent(data.total);
       } catch (error) {
-        console.error("Error fetching total spent:", error)
+        console.error("Error fetching total spent:", error);
       }
     }
     fetchTotal();
@@ -35,7 +40,7 @@ function App() {
       <CardFooter>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
-export default App
+export default App;
