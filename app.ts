@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
-import { expensesRoutes } from './server/routes/expenses'
+import { expensesRoutes } from './frontend/src/routes/expenses'
 import { serveStatic } from 'hono/bun'
 
 
