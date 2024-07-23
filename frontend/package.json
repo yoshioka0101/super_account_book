@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-form": "^0.26.4",
     "@tanstack/react-query": "^5.51.1",
     "@tanstack/react-router": "^1.45.4",
     "@tanstack/router-plugin": "^1.45.3",
