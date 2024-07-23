@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useForm } from '@tanstack/react-form'
 import type { FieldApi } from '@tanstack/react-form'
+import { api } from '@/lib/api'
 
 export const Route = createFileRoute('/create-expense')({
   component: CreateExpense,
@@ -17,7 +18,12 @@ function CreateExpense() {
       amount: 0,
     },
     onSubmit: async ({ value }) => {
-      // Do something with form data
+      await new Promise( r => setTimeout(r,3000));
+
+      const res = await api.expenses.$post( { json: value } )
+      if(!res.ok){
+        throw new Error('Server Error')
+      }
       console.log(value)
     },
   })
