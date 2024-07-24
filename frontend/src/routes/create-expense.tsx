@@ -29,7 +29,7 @@ function CreateExpense() {
       }
       console.log(value)
       alert("リダイレクトされます")
-      navigate('/expenses')
+      navigate({ to: '/expenses'})
     },
   })
 
