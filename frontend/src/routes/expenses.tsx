@@ -1,7 +1,7 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { api } from '@/lib/api'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Table,
   TableBody,
@@ -23,11 +23,30 @@ async function getAllExpenses() {
   return data
 }
 
+async function deleteExpense(id: number) {
+  const result = await api.expenses[id].$delete()
+  return result
+}
+
 function Expenses() {
+  const queryClient = useQueryClient()
+
   const { isPending, error, data } = useQuery({
     queryKey: ['get-all-expenses'],
     queryFn: getAllExpenses
   })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteExpense,
+    onSuccess: () => {
+      queryClient.invalidateQueries('get-all-expenses')
+    }
+  })
+
+ const handleDelete = (id: number) => {
+    alert('本当に削除しますか？')
+    deleteMutation.mutate(id)
+  }
 
   if (isPending) {
     return <div className="p-2">Loading...</div>
@@ -49,6 +68,7 @@ function Expenses() {
           <TableHead className="w-[100px]">Id</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Amount</TableHead>
+          <TableHead>Delete</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -57,6 +77,9 @@ function Expenses() {
             <TableCell className="font-medium">{expense.id}</TableCell>
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
+            <TableCell>
+              <button onClick={() => handleDelete(expense.id)}>Delete</button>
+            </TableCell>
             <TableCell className="text-right">{expense.amount}</TableCell>
           </TableRow>
         ))}

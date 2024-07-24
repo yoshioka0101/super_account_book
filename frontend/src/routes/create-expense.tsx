@@ -28,8 +28,7 @@ function CreateExpense() {
         throw new Error('Server Error')
       }
       console.log(value)
-      alert("リダイレクトされます")
-      navigate('/expenses')
+      navigate({to: '/expenses'})
     },
   })
 
