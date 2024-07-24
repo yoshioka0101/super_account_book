@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import { useForm } from '@tanstack/react-form'
 import type { FieldApi } from '@tanstack/react-form'
 import { api } from '@/lib/api'
+import { useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/create-expense')({
   component: CreateExpense,
 })
 
 function CreateExpense() {
+  const navigate = useNavigate()
+
   const form = useForm({
     defaultValues: {
       title: '',
@@ -25,6 +28,8 @@ function CreateExpense() {
         throw new Error('Server Error')
       }
       console.log(value)
+      alert("リダイレクトされます")
+      navigate('/expenses')
     },
   })
 
