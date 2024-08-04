@@ -1,5 +1,5 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { api } from '@/lib/api'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -12,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toast } from "sonner"
+import { Button, IconButton } from "@/components/ui/button"
 
 export const Route = createFileRoute('/expenses')({
   component: Expenses,
@@ -31,7 +33,7 @@ async function deleteExpense(id: number) {
 function Expenses() {
   const queryClient = useQueryClient()
 
-  const { isPending, error, data } = useQuery({
+  const { isLoading, error, data } = useQuery({
     queryKey: ['get-all-expenses'],
     queryFn: getAllExpenses
   })
@@ -39,16 +41,25 @@ function Expenses() {
   const deleteMutation = useMutation({
     mutationFn: deleteExpense,
     onSuccess: () => {
-      queryClient.invalidateQueries('get-all-expenses')
-    }
+      queryClient.invalidateQueries('get-all-expenses');
+      toast('Expense Deleted', {
+        description: '削除が成功しました',
+      });
+    },
+    onError: () => {
+      toast('Error', {
+        description: '削除できませんでした',
+      })
+    },
   })
 
- const handleDelete = (id: number) => {
-    alert('本当に削除しますか？')
-    deleteMutation.mutate(id)
+  const handleDelete = (id: number) => {
+    if (confirm('本当に削除しますか？')) {
+      deleteMutation.mutate(id);
+    }
   }
 
-  if (isPending) {
+  if (isLoading) {
     return <div className="p-2">Loading...</div>
   }
 
@@ -78,9 +89,11 @@ function Expenses() {
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
             <TableCell>
-              <button onClick={() => handleDelete(expense.id)}>Delete</button>
+              <IconButton
+                disabled={deleteMutation.isPending}
+                onClick={() => handleDelete(expense.id)}
+              />
             </TableCell>
-            <TableCell className="text-right">{expense.amount}</TableCell>
           </TableRow>
         ))}
       </TableBody>
