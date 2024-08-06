@@ -1,7 +1,7 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { api } from '@/lib/api'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Table,
   TableBody,
@@ -12,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { toast } from "sonner"
+import { Button, IconButton } from "@/components/ui/button"
 
 export const Route = createFileRoute('/expenses')({
   component: Expenses,
@@ -23,13 +25,41 @@ async function getAllExpenses() {
   return data
 }
 
+async function deleteExpense(id: number) {
+  const result = await api.expenses[id].$delete()
+  return result
+}
+
 function Expenses() {
-  const { isPending, error, data } = useQuery({
+  const queryClient = useQueryClient()
+
+  const { isLoading, error, data } = useQuery({
     queryKey: ['get-all-expenses'],
     queryFn: getAllExpenses
   })
 
-  if (isPending) {
+  const deleteMutation = useMutation({
+    mutationFn: deleteExpense,
+    onSuccess: () => {
+      queryClient.invalidateQueries('get-all-expenses');
+      toast('Expense Deleted', {
+        description: '削除が成功しました',
+      });
+    },
+    onError: () => {
+      toast('Error', {
+        description: '削除できませんでした',
+      })
+    },
+  })
+
+  const handleDelete = (id: number) => {
+    if (confirm('本当に削除しますか？')) {
+      deleteMutation.mutate(id);
+    }
+  }
+
+  if (isLoading) {
     return <div className="p-2">Loading...</div>
   }
 
@@ -49,6 +79,7 @@ function Expenses() {
           <TableHead className="w-[100px]">Id</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Amount</TableHead>
+          <TableHead>Delete</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -57,7 +88,12 @@ function Expenses() {
             <TableCell className="font-medium">{expense.id}</TableCell>
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
-            <TableCell className="text-right">{expense.amount}</TableCell>
+            <TableCell>
+              <IconButton
+                disabled={deleteMutation.isPending}
+                onClick={() => handleDelete(expense.id)}
+              />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
