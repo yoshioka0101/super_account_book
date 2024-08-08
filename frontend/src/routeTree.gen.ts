@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ExpensesImport } from './routes/expenses'
+import { Route as ExpenseWithReceiptImport } from './routes/expense-with-receipt'
 import { Route as CreateExpenseImport } from './routes/create-expense'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -20,6 +21,11 @@ import { Route as IndexImport } from './routes/index'
 
 const ExpensesRoute = ExpensesImport.update({
   path: '/expenses',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ExpenseWithReceiptRoute = ExpenseWithReceiptImport.update({
+  path: '/expense-with-receipt',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -63,6 +69,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateExpenseImport
       parentRoute: typeof rootRoute
     }
+    '/expense-with-receipt': {
+      id: '/expense-with-receipt'
+      path: '/expense-with-receipt'
+      fullPath: '/expense-with-receipt'
+      preLoaderRoute: typeof ExpenseWithReceiptImport
+      parentRoute: typeof rootRoute
+    }
     '/expenses': {
       id: '/expenses'
       path: '/expenses'
@@ -79,6 +92,7 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AboutRoute,
   CreateExpenseRoute,
+  ExpenseWithReceiptRoute,
   ExpensesRoute,
 })
 
@@ -93,6 +107,7 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/about",
         "/create-expense",
+        "/expense-with-receipt",
         "/expenses"
       ]
     },
@@ -104,6 +119,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create-expense": {
       "filePath": "create-expense.tsx"
+    },
+    "/expense-with-receipt": {
+      "filePath": "expense-with-receipt.tsx"
     },
     "/expenses": {
       "filePath": "expenses.tsx"
