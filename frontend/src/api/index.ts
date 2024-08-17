@@ -1,6 +1,6 @@
 // Google Vision APIキーを取得する関数
 export const getGoogleVisionApiKey = () => {
-  const apiKey = process.env.GOOGLE_VISION_API_KEY;
+  const apiKey = process.env.VITE_GOOGLE_VISION_API_KEY;
 
   if (!apiKey) {
     throw new Error('Google Vision APIキーが見つかりません');

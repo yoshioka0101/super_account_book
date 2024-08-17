@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
+import api from '../api';
 
 export const Route = createFileRoute('/expense-with-receipt')({
   component: ExpenseWithReceipt,
@@ -24,7 +25,8 @@ function ExpenseWithReceipt() {
   }
 
   const handleClick = async () => {
-    const apiKey = import.meta.env.GOOGLE_VISION_API_KEY; // Ensure this is correctly set in your .env file
+    const apiKey = import.meta.env.VITE_GOOGLE_VISION_API_KEY;
+    console.log(apiKey);
 
     // Keyの指定が誤っていた場合などに関する例外処理
     if (!apiKey) {
@@ -60,7 +62,6 @@ function ExpenseWithReceipt() {
       <main className="App-main">
         <h3>画像をアップロードしてください</h3>
         {imagePath && <img src={imagePath} className="App-image" alt="Uploaded" />}
-        
         <h3>Extracted text</h3>
         <div className="text-box">
           <p>{text}</p>
