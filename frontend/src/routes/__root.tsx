@@ -1,9 +1,9 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
-// import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
+// import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 export const Route = createRootRoute({
-  component: Root
-})
+  component: Root,
+});
 
 function NavBar() {
   return (
@@ -20,8 +20,11 @@ function NavBar() {
       <Link to="/create-expense" className="[&.active]:font-bold">
         Create
       </Link>
+      <Link to="/expense-with-receipt" className="[&.active]:font-bold">
+        Receipt
+      </Link>
     </div> 
-  )
+  );
 }
 
 function Root() {
