@@ -21,7 +21,7 @@ function CreateExpense() {
       amount: 0,
     },
     onSubmit: async ({ value }) => {
-      await new Promise( r => setTimeout(r,3000));
+      await new Promise( r => setTimeout(r,2000));
 
       const res = await api.expenses.$post( { json: value } )
       if(!res.ok){
@@ -29,7 +29,6 @@ function CreateExpense() {
       }
       console.log(value)
 
-      alert("リダイレクトされます")
       navigate({ to: '/expenses'})
     },
   })
