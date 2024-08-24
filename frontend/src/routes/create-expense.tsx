@@ -22,15 +22,15 @@ function CreateExpense() {
       tag: '',
     },
     onSubmit: async ({ value }) => {
-      await new Promise(r => setTimeout(r, 2000));
+      await new Promise( r => setTimeout(r, 2000));
 
-      const res = await api.expenses.$post({ json: value })
-      if (!res.ok) {
+      const res = await api.expenses.$post( { json: value } )
+      if (!res.ok){
         throw new Error('Server Error')
       }
       console.log(value)
 
-      navigate({ to: '/expenses' })
+      navigate({ to: '/expenses'})
     },
   })
 
@@ -85,14 +85,18 @@ function CreateExpense() {
             {(field: FieldApi<string>) => (
               <>
                 <Label htmlFor={field.name}>Tag:</Label>
-                <Input
+                <select
                   id={field.name}
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Tag"
-                />
+                  className="border rounded px-3 py-2"
+                >
+                  <option value="red">Red</option>
+                  <option value="blue">Blue</option>
+                  <option value="green">Green</option>
+                </select>
               </>
             )}
           </form.Field>
