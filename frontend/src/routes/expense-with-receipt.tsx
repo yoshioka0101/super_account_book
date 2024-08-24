@@ -92,18 +92,23 @@ function ExpenseWithReceipt() {
     };
   }
 
-const handleSave = async () => {
-  try {
-    const response = await axios.post('/create-expense', {
-      title,
-      amount,
-    });
-    console.log("データが保存されました", response.data);
-    navigate('/');
-  } catch (error) {
-    console.error('保存中にエラーが発生しました', error);
-  }
-};
+  const handleSave = async () => {
+    try {
+      const response = await axios.post('/api/create-expense', {
+        title,
+        amount,
+      });
+      console.log('保存が成功しました', response.data);
+      navigate('/');
+    } catch (error) {
+      // 404エラーの処理
+      if (error.response?.status === 404) {
+        console.error('保存先が見つかりませんでした', error);
+      } else {
+        console.error('保存中にエラーが発生しました', error);
+      }
+    }
+  };
 
   return (
     <div className="App">
