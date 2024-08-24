@@ -5,7 +5,8 @@ import { z } from 'zod'
 const expenseSchema = z.object({
     id: z.number().int().positive().min(1),
     title: z.string().min(3).max(100),
-    amount: z.number().int().positive()
+    amount: z.number().int().positive(),
+    tag: z.string().min(1)
 })
 
 type Expense = z.infer<typeof expenseSchema>
@@ -14,9 +15,9 @@ const createPostSchema = expenseSchema.omit({ id: true })
 
 // サンプルデータを追加
 let fakeExpenses: Expense[] = [
-  { id: 1, title: 'Groceries', amount: 50 },
-  { id: 2, title: 'Utilities', amount: 100 },
-  { id: 3, title: 'Rent', amount: 800 },
+  { id: 1, title: 'Groceries', amount: 50, tag: 'tag1' },
+  { id: 2, title: 'Utilities', amount: 100, tag: 'tag2' },
+  { id: 3, title: 'Rent', amount: 800, tag: 'tag3' },
 ];
 
 export const expensesRoutes = new Hono()

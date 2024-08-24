@@ -79,15 +79,17 @@ function Expenses() {
           <TableHead className="w-[100px]">Id</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Amount</TableHead>
+          <TableHead>Tag</TableHead>
           <TableHead>Delete</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.expenses.map((expense: { id: number; title: string; amount: number }) => (
+        {data.expenses.map((expense: { id: number; title: string; amount: number; tag: string }) => (
           <TableRow key={expense.id}>
             <TableCell className="font-medium">{expense.id}</TableCell>
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
+            <TableCell>{expense.tag}</TableCell>
             <TableCell>
               <IconButton
                 disabled={deleteMutation.isPending}
