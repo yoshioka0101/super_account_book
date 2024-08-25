@@ -15,6 +15,15 @@ export const Route = createFileRoute('/create-expense')({
 function CreateExpense() {
   const navigate = useNavigate()
 
+  //初期データ
+  const initialTags = ["食費", "交通費", "娯楽費", "光熱費", "固定費", "その他"];
+  const [tags, setTags] = React.useState<string[]>([])
+
+  React.useEffect(() => {
+    const savedTags = JSON.parse(localStorage.getItem('expenseTags') || '[]');
+    setTags([...initialTags, ...savedTags]);
+  }, [])
+
   const form = useForm({
     defaultValues: {
       title: '',
@@ -24,7 +33,13 @@ function CreateExpense() {
     onSubmit: async ({ value }) => {
       await new Promise( r => setTimeout(r, 2000));
 
-      const res = await api.expenses.$post( { json: value } )
+      if (value.tag && !tags.includes(value.tag) && !initialTags.includes(value.tag)) {
+        const updatedTags = [...tags, value.tag]
+        setTags(updatedTags)
+        localStorage.setItem('expenseTags', JSON.stringify(updatedTags))
+      }
+
+      const res = await api.expenses.$post({ json: value })
       if (!res.ok){
         throw new Error('Server Error')
       }
@@ -93,9 +108,12 @@ function CreateExpense() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   className="border rounded px-3 py-2"
                 >
-                  <option value="red">Red</option>
-                  <option value="blue">Blue</option>
-                  <option value="green">Green</option>
+                  <option value="" disabled>Tag</option>
+                  {tags.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
+                    </option>
+                  ))}
                 </select>
               </>
             )}
