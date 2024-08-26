@@ -106,9 +106,9 @@ function CreateExpense() {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className="border rounded px-3 py-2"
+                  className="custom-tag-dropdown"
                 >
-                  <option value="" disabled>Tag</option>
+                  <option value="" disabled selected>選択肢</option>
                   {tags.map((tag) => (
                     <option key={tag} value={tag}>
                       {tag}
