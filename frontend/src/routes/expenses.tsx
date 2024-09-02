@@ -77,6 +77,7 @@ function Expenses() {
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Id</TableHead>
+          <TableHead>Date</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Amount</TableHead>
           <TableHead>Tag</TableHead>
@@ -84,9 +85,10 @@ function Expenses() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.expenses.map((expense: { id: number; title: string; amount: number; tag: string }) => (
+        {data.expenses.map((expense: { id: number; date: string; title: string; amount: number; tag: string }) => (
           <TableRow key={expense.id}>
             <TableCell className="font-medium">{expense.id}</TableCell>
+            <TableCell>{expense.date}</TableCell>
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
             <TableCell>{expense.tag}</TableCell>

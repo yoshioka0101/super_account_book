@@ -27,6 +27,7 @@ function CreateExpense() {
 
   const form = useForm({
     defaultValues: {
+      date: '',
       title: '',
       amount: 0,
       tag: '',
@@ -45,6 +46,10 @@ function CreateExpense() {
 
       if (value.amount <= 0) {
         errors.amount = '1円以上で入力してください';
+      }
+
+      if (!value.date) {
+        errors.date = '日付を選択してください';
       }
 
       if (Object.keys(errors).length > 0) {
@@ -141,6 +146,25 @@ function CreateExpense() {
                   ))}
                 </select>
                 {formErrors.tag && <p className="text-red-500">{formErrors.tag}</p>}
+              </>
+            )}
+          </form.Field>
+        </div>
+        <div className="mb-4">
+          <form.Field name="date">
+            {(field: FieldApi<string>) => (
+              <>
+                <Label htmlFor={field.name}>Date:</Label>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="date"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="YYYY-MM-DD"
+                />
+                {formErrors.date && <p className="text-red-500">{formErrors.date}</p>}
               </>
             )}
           </form.Field>

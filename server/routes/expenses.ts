@@ -15,9 +15,9 @@ const createPostSchema = expenseSchema.omit({ id: true })
 
 // サンプルデータを追加
 let fakeExpenses: Expense[] = [
-  { id: 1, title: 'Groceries', amount: 50, tag: 'tag1' },
-  { id: 2, title: 'Utilities', amount: 100, tag: 'tag2' },
-  { id: 3, title: 'Rent', amount: 800, tag: 'tag3' },
+  { id: 1, date: '2023/08/12', title: 'Groceries', amount: 50, tag: 'tag1' },
+  { id: 2, date: '2023/08/11', title: 'Utilities', amount: 100, tag: 'tag2' },
+  { id: 3, date: '2023/08/21', title: 'Rent', amount: 800, tag: 'tag3' },
 ];
 
 export const expensesRoutes = new Hono()
