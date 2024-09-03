@@ -173,3 +173,7 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# SQLite database and journal files
+prisma/dev.db
+prisma/dev.db-journal
