@@ -33,46 +33,54 @@ function CreateExpense() {
       tag: '',
     },
     onSubmit: async ({ value }) => {
-     // エラーメッセージをリセットすることで再入力の時にvalidationが効くようにする
-      setFormErrors({});
+  // エラーメッセージをリセットする
+  setFormErrors({});
 
-      // フロントエンド側での簡易バリデーションを追加
-      const errors: Record<string, string> = {};
-      if (!value.title) {
-        errors.title = '必須項目です';
-      } else if (value.title.length < 3) {
-        errors.title = '3文字以上で入力してください';
-      }
+  // フロントエンド側での簡易バリデーションを追加
+  const errors: Record<string, string> = {};
+  if (!value.title) {
+    errors.title = '必須項目です';
+  } else if (value.title.length < 3) {
+    errors.title = '3文字以上で入力してください';
+  }
 
-      if (value.amount <= 0) {
-        errors.amount = '1円以上で入力してください';
-      }
+  if (value.amount <= 0) {
+    errors.amount = '1円以上で入力してください';
+  }
 
-      if (!value.date) {
-        errors.date = '日付を選択してください';
-      }
+  if (!value.date) {
+    errors.date = '日付を選択してください';
+  }
 
-      if (Object.keys(errors).length > 0) {
-        setFormErrors(errors);
-        return;
-      }
+  if (Object.keys(errors).length > 0) {
+    setFormErrors(errors);
+    return;
+  }
 
-      // サーバーサイドバリデーション
-      const res = await api.expenses.$post({ json: value })
-      if (!res.ok) {
-        const errorData = await res.json();
-        if (res.status === 400 && errorData.error) {
-          const errors = errorData.error.reduce((acc: Record<string, string>, err: any) => {
-            acc[err.path[0]] = err.message;
-            return acc;
-          }, {});
-          setFormErrors(errors);
-          return;
-        } else {
-          throw new Error('Server Error');
-        }
-      }
+  // 日付をISO-8601形式に変換
+  const formattedDate = new Date(value.date).toISOString();
 
+  // サーバーサイドバリデーション
+  const res = await api.expenses.$post({
+    json: {
+      ...value,
+      date: formattedDate,
+    }
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    if (res.status === 400 && errorData.error) {
+      const errors = errorData.error.reduce((acc: Record<string, string>, err: any) => {
+        acc[err.path[0]] = err.message;
+        return acc;
+      }, {});
+      setFormErrors(errors);
+      return;
+    } else {
+      throw new Error('Server Error');
+    }
+  }
       navigate({ to: '/expenses' })
     },
   })
