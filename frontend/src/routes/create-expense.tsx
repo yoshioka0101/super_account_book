@@ -15,6 +15,7 @@ export const Route = createFileRoute('/create-expense')({
 function CreateExpense() {
   const navigate = useNavigate()
   const [formErrors, setFormErrors] = React.useState<Record<string, string>>({})
+  const [submittedDate, setSubmittedDate] = React.useState<string | null>(null)
 
   //初期データ
   const initialTags = ["食費", "交通費", "娯楽費", "光熱費", "固定費", "その他"];
@@ -33,7 +34,7 @@ function CreateExpense() {
       tag: '',
     },
     onSubmit: async ({ value }) => {
-     // エラーメッセージをリセットすることで再入力の時にvalidationが効くようにする
+      // エラーメッセージをリセットする
       setFormErrors({});
 
       // フロントエンド側での簡易バリデーションを追加
@@ -57,8 +58,22 @@ function CreateExpense() {
         return;
       }
 
+      // 日付をISO-8601形式に変換
+      const formattedDate = new Date(value.date).toISOString();
+      // 日付部分のみをハイフン付きの形式 (YYYY-MM-DD) で取得
+      const formattedDateForDisplay = formattedDate.split('T')[0];
+
+      console.log(formattedDateForDisplay); // テスト出力
+      setSubmittedDate(formattedDateForDisplay); // 状態に保存
+
       // サーバーサイドバリデーション
-      const res = await api.expenses.$post({ json: value })
+      const res = await api.expenses.$post({
+        json: {
+          ...value,
+          date: formattedDate,
+        }
+      });
+
       if (!res.ok) {
         const errorData = await res.json();
         if (res.status === 400 && errorData.error) {
@@ -72,7 +87,6 @@ function CreateExpense() {
           throw new Error('Server Error');
         }
       }
-
       navigate({ to: '/expenses' })
     },
   })
@@ -178,6 +192,12 @@ function CreateExpense() {
           )}
         />
       </form>
+      {/* 提出された日付を表示 */}
+      {submittedDate && (
+        <div className="mt-4">
+          <p>Submitted Date: {submittedDate}</p>
+        </div>
+      )}
     </div>
   )
 }

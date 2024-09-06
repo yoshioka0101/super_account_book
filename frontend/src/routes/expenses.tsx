@@ -30,6 +30,11 @@ async function deleteExpense(id: number) {
   return result
 }
 
+// 日付を YYYY-MM-DD 形式に変換する関数
+function formatDate(isoDate: string): string {
+  return isoDate.split('T')[0]; // 'T' 以降を削除して YYYY-MM-DD を取得
+}
+
 function Expenses() {
   const queryClient = useQueryClient()
 
@@ -88,7 +93,7 @@ function Expenses() {
         {data.expenses.map((expense: { id: number; date: string; title: string; amount: number; tag: string }) => (
           <TableRow key={expense.id}>
             <TableCell className="font-medium">{expense.id}</TableCell>
-            <TableCell>{expense.date}</TableCell>
+            <TableCell>{formatDate(expense.date)}</TableCell>
             <TableCell>{expense.title}</TableCell>
             <TableCell>{expense.amount}</TableCell>
             <TableCell>{expense.tag}</TableCell>
