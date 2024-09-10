@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as MonthlydateImport } from './routes/monthlydate'
 import { Route as ExpensesImport } from './routes/expenses'
 import { Route as ExpenseWithReceiptImport } from './routes/expense-with-receipt'
 import { Route as CreateExpenseImport } from './routes/create-expense'
@@ -18,6 +19,11 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const MonthlydateRoute = MonthlydateImport.update({
+  path: '/monthlydate',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ExpensesRoute = ExpensesImport.update({
   path: '/expenses',
@@ -83,6 +89,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesImport
       parentRoute: typeof rootRoute
     }
+    '/monthlydate': {
+      id: '/monthlydate'
+      path: '/monthlydate'
+      fullPath: '/monthlydate'
+      preLoaderRoute: typeof MonthlydateImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -94,6 +107,7 @@ export const routeTree = rootRoute.addChildren({
   CreateExpenseRoute,
   ExpenseWithReceiptRoute,
   ExpensesRoute,
+  MonthlydateRoute,
 })
 
 /* prettier-ignore-end */
@@ -108,7 +122,8 @@ export const routeTree = rootRoute.addChildren({
         "/about",
         "/create-expense",
         "/expense-with-receipt",
-        "/expenses"
+        "/expenses",
+        "/monthlydate"
       ]
     },
     "/": {
@@ -125,6 +140,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/expenses": {
       "filePath": "expenses.tsx"
+    },
+    "/monthlydate": {
+      "filePath": "monthlydate.tsx"
     }
   }
 }
