@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
+import { formatMonth, filterExpensesByMonth } from '@/utils/format';
 
 export const Route = createFileRoute('/')({
   component: Index
@@ -17,15 +18,13 @@ async function getTotalSpent() {
 }
 
 function Index() {
-  const { isLoading, error, data } = useQuery({ queryKey: ['get-total-spent'], queryFn: getTotalSpent });
+  const { isPending, error, data } = useQuery({ queryKey: ['get-total-spent'], queryFn: getTotalSpent });
   const [currentlyMonth, setCurrentlyMonth] = useState(new Date());
   const [expenses, setExpenses] = useState<any[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
 
-  const formattedMonth = format(currentlyMonth, "yyyy-MM");
+  const formattedMonth = formatMonth(currentlyMonth);
 
-  console.log(formattedMonth);
-  // 経費データを取得する
   useEffect(() => {
     async function fetchExpenses() {
       try {
@@ -40,11 +39,9 @@ function Index() {
     fetchExpenses();
   }, []);
 
-  // フィルタリングされたデータを抽出
   useEffect(() => {
-    const filtered = expenses.filter(expense => expense.date.startsWith(formattedMonth));
-    setFilteredExpenses(filtered);
-  }, [expenses, formattedMonth]);
+    setFilteredExpenses(filterExpensesByMonth(expenses, formattedMonth));
+  }, [expenses, currentlyMonth]);
 
   return (
     <>
@@ -53,7 +50,7 @@ function Index() {
           <CardTitle>Total Spent</CardTitle>
           <CardDescription>The total amount you have spent for {formattedMonth}</CardDescription>
         </CardHeader>
-        <CardContent>{isLoading ? "Loading..." : error ? "Error fetching total spent" : data?.total}</CardContent>
+        <CardContent>{isPending ? "Loading..." : error ? "Error fetching total spent" : data?.total}</CardContent>
         <CardFooter></CardFooter>
       </Card>
       

@@ -36,7 +36,6 @@ function MonthlyDate() {
   return (
     <div>
       <h2>月のデータを表示</h2>
-      <p>現在の月: {formattedMonth}</p>
       <Table>
         <TableHeader>
           <TableRow>
