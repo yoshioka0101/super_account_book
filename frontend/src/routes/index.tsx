@@ -47,8 +47,8 @@ function Index() {
     <>
       <Card className="w-[350px] m-auto">
         <CardHeader>
-          <CardTitle>Total Spent</CardTitle>
-          <CardDescription>The total amount you have spent for {formattedMonth}</CardDescription>
+          <CardTitle>合計金額</CardTitle>
+          <CardDescription>あなたの合計出費金額 </CardDescription>
         </CardHeader>
         <CardContent>{isPending ? "Loading..." : error ? "Error fetching total spent" : data?.total}</CardContent>
         <CardFooter></CardFooter>
@@ -56,7 +56,7 @@ function Index() {
       
       <Card className="w-[800px] m-auto mt-8">
         <CardHeader>
-          <CardTitle>Monthly Expenses</CardTitle>
+          <CardTitle>月別支出</CardTitle>
         </CardHeader>
         <CardContent>
           {/* フィルタリングされた経費データの表示 */}
