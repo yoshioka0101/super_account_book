@@ -23,9 +23,6 @@ function NavBar() {
       <Link to="/expense-with-receipt" className="[&.active]:font-bold">
         Receipt
       </Link>
-      <Link to="/monthlydate" className="[&.active]:font-bold">
-        monthly-date
-      </Link>
     </div> 
   );
 }
