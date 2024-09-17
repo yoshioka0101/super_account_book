@@ -1,11 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+import { format, addMonths } from 'date-fns';
 import { api } from '@/lib/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
 import { formatMonth, filterExpensesByMonth } from '@/utils/format';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/')({
   component: Index
@@ -37,12 +38,19 @@ function Index() {
     }
 
     fetchExpenses();
-  }, []);
+  }, [formattedMonth]);
 
   useEffect(() => {
     setFilteredExpenses(filterExpensesByMonth(expenses, formattedMonth));
   }, [expenses, currentlyMonth]);
 
+  const handlePreviousMonth = () => {
+    setCurrentlyMonth(addMonths(currentlyMonth, -1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentlyMonth(addMonths(currentlyMonth, +1));
+  };
   return (
     <>
       <Card className="w-[350px] m-auto">
@@ -53,7 +61,13 @@ function Index() {
         <CardContent>{isPending ? "Loading..." : error ? "Error fetching total spent" : data?.total}</CardContent>
         <CardFooter></CardFooter>
       </Card>
-      
+
+      <CardFooter className="flex justify-center items-center gap-4">
+        <Button onClick={handlePreviousMonth}>前月</Button>
+         <h2>{formattedMonth}</h2>
+        <Button onClick={handleNextMonth}>次月</Button>
+      </CardFooter>
+
       <Card className="w-[800px] m-auto mt-8">
         <CardHeader>
           <CardTitle>月別支出</CardTitle>
