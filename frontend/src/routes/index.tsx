@@ -53,7 +53,7 @@ function Index() {
   };
   return (
     <>
-      <Card className="w-[350px] m-auto">
+      <Card className="w-[350px] m-auto mb-8">
         <CardHeader>
           <CardTitle>合計金額</CardTitle>
           <CardDescription>あなたの合計出費金額 </CardDescription>
