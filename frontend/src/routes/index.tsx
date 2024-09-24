@@ -6,9 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
 import { formatMonth, filterExpensesByMonth } from '@/utils/format';
-import { selectTag } from '@/utils/tag';
+import { initialTags,getTags, selectTag } from '@/utils/tag';
 import { Button } from '@/components/ui/button';
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute('/')({
   component: Index
@@ -25,10 +25,7 @@ function Index() {
   const [currentlyMonth, setCurrentlyMonth] = useState(new Date());
   const [expenses, setExpenses] = useState<any[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
-
   const formattedMonth = formatMonth(currentlyMonth);
-
-  const initialTags = ["食費", "交通費", "娯楽費", "光熱費", "固定費", "その他"];
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>('');
 
@@ -45,6 +42,10 @@ function Index() {
 
     fetchExpenses();
   }, [formattedMonth]);
+
+  useEffect(() => {
+    setTags(getTags());
+  },[]);
 
   useEffect(() => {
     let monthFiltered = filterExpensesByMonth(expenses, formattedMonth);
@@ -77,7 +78,7 @@ function Index() {
 
       <CardFooter className="flex justify-center items-center gap-4">
         <Button onClick={handlePreviousMonth}>前月</Button>
-         <h2>{formattedMonth}</h2>
+        <h2>{formattedMonth}</h2>
         <Button onClick={handleNextMonth}>次月</Button>
       </CardFooter>
 
@@ -89,7 +90,7 @@ function Index() {
             value={selectedTag}
             onChange={(e) => setSelectedTag(e.target.value)}
           >
-            <option value="">選択肢</option>
+            <option value="">すべて</option>
             {tags.map((tag) => (
               <option key={tag} value={tag}>
                 {tag}

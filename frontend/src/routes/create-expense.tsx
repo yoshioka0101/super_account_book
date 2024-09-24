@@ -1,12 +1,14 @@
-import * as React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { useForm } from '@tanstack/react-form'
-import type { FieldApi } from '@tanstack/react-form'
-import { api } from '@/lib/api'
-import { useNavigate } from '@tanstack/react-router'
+import * as React from 'react';
+import { useEffect } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useForm } from '@tanstack/react-form';
+import type { FieldApi } from '@tanstack/react-form';
+import { api } from '@/lib/api';
+import { useNavigate } from '@tanstack/react-router';
+import { initialTags } from '@/utils/tag';
 
 export const Route = createFileRoute('/create-expense')({
   component: CreateExpense,
@@ -16,15 +18,12 @@ function CreateExpense() {
   const navigate = useNavigate()
   const [formErrors, setFormErrors] = React.useState<Record<string, string>>({})
   const [submittedDate, setSubmittedDate] = React.useState<string | null>(null)
-
-  //初期データ
-  const initialTags = ["食費", "交通費", "娯楽費", "光熱費", "固定費", "その他"];
   const [tags, setTags] = React.useState<string[]>([])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedTags = JSON.parse(localStorage.getItem('expenseTags') || '[]');
     setTags([...initialTags, ...savedTags]);
-  }, [])
+  }, []);
 
   const form = useForm({
     defaultValues: {
@@ -34,10 +33,10 @@ function CreateExpense() {
       tag: '',
     },
     onSubmit: async ({ value }) => {
-      // エラーメッセージをリセットする
+      // エラーメッセージをリセット
       setFormErrors({});
 
-      // フロントエンド側での簡易バリデーションを追加
+      // フォームのバリデーション
       const errors: Record<string, string> = {};
       if (!value.title) {
         errors.title = '必須項目です';
@@ -60,11 +59,7 @@ function CreateExpense() {
 
       // 日付をISO-8601形式に変換
       const formattedDate = new Date(value.date).toISOString();
-      // 日付部分のみをハイフン付きの形式 (YYYY-MM-DD) で取得
-      const formattedDateForDisplay = formattedDate.split('T')[0];
-
-      console.log(formattedDateForDisplay); // テスト出力
-      setSubmittedDate(formattedDateForDisplay); // 状態に保存
+      setSubmittedDate(formattedDate.split('T')[0]);
 
       // サーバーサイドバリデーション
       const res = await api.expenses.$post({
@@ -87,20 +82,16 @@ function CreateExpense() {
           throw new Error('Server Error');
         }
       }
-      navigate({ to: '/expenses' })
+      navigate({ to: '/expenses' });
     },
-  })
+  });
 
   return (
     <div className="p-2">
       <h2>Create Expense</h2>
       <form
         className='max-w-xl m-auto'
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
+        onSubmit={form.handleSubmit}
       >
         <div className="mb-4">
           <form.Field name="title">
@@ -149,7 +140,10 @@ function CreateExpense() {
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                    if (formErrors.tag) setFormErrors(prev => ({ ...prev, tag: '' }));
+                  }}
                   className="custom-tag-dropdown"
                 >
                   <option value="" disabled>選択肢</option>
@@ -199,5 +193,5 @@ function CreateExpense() {
         </div>
       )}
     </div>
-  )
+  );
 }
