@@ -25,3 +25,6 @@ dist-ssr
 
 ## API keyをenvで指定するために追加
 .env
+
+prisma/dev.db
+prisma/dev.db-journal
