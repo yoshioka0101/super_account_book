@@ -6,7 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
 import { formatMonth, filterExpensesByMonth } from '@/utils/format';
+import { selectTag } from '@/utils/tag';
 import { Button } from '@/components/ui/button';
+import { Label } from "@/components/ui/label"
 
 export const Route = createFileRoute('/')({
   component: Index
@@ -26,6 +28,10 @@ function Index() {
 
   const formattedMonth = formatMonth(currentlyMonth);
 
+  const initialTags = ["食費", "交通費", "娯楽費", "光熱費", "固定費", "その他"];
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState<string>('');
+
   useEffect(() => {
     async function fetchExpenses() {
       try {
@@ -41,8 +47,9 @@ function Index() {
   }, [formattedMonth]);
 
   useEffect(() => {
-    setFilteredExpenses(filterExpensesByMonth(expenses, formattedMonth));
-  }, [expenses, currentlyMonth]);
+    let monthFiltered = filterExpensesByMonth(expenses, formattedMonth);
+    setFilteredExpenses(selectTag(monthFiltered, selectedTag)); // タグでフィルタリング
+  }, [expenses, currentlyMonth, selectedTag]);
 
   const handlePreviousMonth = () => {
     setCurrentlyMonth(addMonths(currentlyMonth, -1));
@@ -51,6 +58,12 @@ function Index() {
   const handleNextMonth = () => {
     setCurrentlyMonth(addMonths(currentlyMonth, +1));
   };
+
+  useEffect(() => {
+    const savedTags = JSON.parse(localStorage.getItem('expenseTags') || '[]');
+    setTags([...initialTags, ...savedTags]); 
+  }, []);
+
   return (
     <>
       <Card className="w-[350px] m-auto mb-8">
@@ -68,12 +81,29 @@ function Index() {
         <Button onClick={handleNextMonth}>次月</Button>
       </CardFooter>
 
+      <CardFooter className="flex justify-center items-center gap-4">
+        <div className="mb-4">
+          <Label htmlFor="tag-select">Tag:</Label>
+          <select
+            id="tag-select"
+            value={selectedTag}
+            onChange={(e) => setSelectedTag(e.target.value)}
+          >
+            <option value="">選択肢</option>
+            {tags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+        </div>
+      </CardFooter>
+
       <Card className="w-[800px] m-auto mt-8">
         <CardHeader>
           <CardTitle>月別支出</CardTitle>
         </CardHeader>
         <CardContent>
-          {/* フィルタリングされた経費データの表示 */}
           <Table>
             <TableHeader>
               <TableRow>
