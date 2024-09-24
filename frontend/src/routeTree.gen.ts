@@ -11,13 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IncomesImport } from './routes/incomes'
 import { Route as ExpensesImport } from './routes/expenses'
 import { Route as ExpenseWithReceiptImport } from './routes/expense-with-receipt'
+import { Route as CreateIncomeImport } from './routes/create-income'
 import { Route as CreateExpenseImport } from './routes/create-expense'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const IncomesRoute = IncomesImport.update({
+  path: '/incomes',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ExpensesRoute = ExpensesImport.update({
   path: '/expenses',
@@ -26,6 +33,11 @@ const ExpensesRoute = ExpensesImport.update({
 
 const ExpenseWithReceiptRoute = ExpenseWithReceiptImport.update({
   path: '/expense-with-receipt',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CreateIncomeRoute = CreateIncomeImport.update({
+  path: '/create-income',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -69,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateExpenseImport
       parentRoute: typeof rootRoute
     }
+    '/create-income': {
+      id: '/create-income'
+      path: '/create-income'
+      fullPath: '/create-income'
+      preLoaderRoute: typeof CreateIncomeImport
+      parentRoute: typeof rootRoute
+    }
     '/expense-with-receipt': {
       id: '/expense-with-receipt'
       path: '/expense-with-receipt'
@@ -83,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpensesImport
       parentRoute: typeof rootRoute
     }
+    '/incomes': {
+      id: '/incomes'
+      path: '/incomes'
+      fullPath: '/incomes'
+      preLoaderRoute: typeof IncomesImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -92,8 +118,10 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AboutRoute,
   CreateExpenseRoute,
+  CreateIncomeRoute,
   ExpenseWithReceiptRoute,
   ExpensesRoute,
+  IncomesRoute,
 })
 
 /* prettier-ignore-end */
@@ -107,8 +135,10 @@ export const routeTree = rootRoute.addChildren({
         "/",
         "/about",
         "/create-expense",
+        "/create-income",
         "/expense-with-receipt",
-        "/expenses"
+        "/expenses",
+        "/incomes"
       ]
     },
     "/": {
@@ -120,11 +150,17 @@ export const routeTree = rootRoute.addChildren({
     "/create-expense": {
       "filePath": "create-expense.tsx"
     },
+    "/create-income": {
+      "filePath": "create-income.tsx"
+    },
     "/expense-with-receipt": {
       "filePath": "expense-with-receipt.tsx"
     },
     "/expenses": {
       "filePath": "expenses.tsx"
+    },
+    "/incomes": {
+      "filePath": "incomes.tsx"
     }
   }
 }
