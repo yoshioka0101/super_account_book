@@ -17,3 +17,11 @@ model Expense {
   amount Float
   tag   String
 }
+
+model Income {
+  id     Int      @id @default(autoincrement())
+  date   DateTime
+  title  String
+  amount Float
+  tag    String
+}
