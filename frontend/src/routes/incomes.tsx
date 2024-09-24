@@ -7,16 +7,16 @@ import { toast } from "sonner"
 import { Button, IconButton } from "@/components/ui/button"
 
 export const Route = createFileRoute('/incomes')({
-  component: Expenses,
+  component: Incomes,
 })
 
-async function getAllExpenses() {
+async function getAllIncomes() {
   const result = await api.incomes.$get()
   const data = await result.json()
   return data
 }
 
-async function deleteExpense(id: number) {
+async function deleteIncome(id: number) {
   const result = await api.incomes[id].$delete()
   return result
 }
@@ -26,19 +26,19 @@ function formatDate(isoDate: string): string {
   return isoDate.split('T')[0]; // 'T' 以降を削除して YYYY-MM-DD を取得
 }
 
-function Expenses() {
+function Incomes() {
   const queryClient = useQueryClient()
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['get-all-incomes'],
-    queryFn: getAllExpenses
+    queryFn: getAllIncomes
   })
 
   const deleteMutation = useMutation({
-    mutationFn: deleteExpense,
+    mutationFn: deleteIncome,
     onSuccess: () => {
       queryClient.invalidateQueries('get-all-incomes');
-      toast('Expense Deleted', {
+      toast('Income Deleted', {
         description: '削除が成功しました',
       });
     },
