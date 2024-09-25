@@ -25,7 +25,7 @@ export const incomesRoutes = new Hono()
         const newIncome = await prisma.income.create({ data });
         return c.json(newIncome);
     })
-    .get("/total-spent", async (c) => {
+    .get("/total-income", async (c) => {
         const incomes = await prisma.income.findMany();
         const total = incomes.reduce((acc, income) => acc + income.amount, 0);
         return c.json({ total });

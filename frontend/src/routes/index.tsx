@@ -5,8 +5,8 @@ import { api } from '@/lib/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
-import { formatMonth, filterExpensesByMonth } from '@/utils/format';
-import { initialTags,getTags, selectTag } from '@/utils/tag';
+import { formatMonth, filterExpensesByMonth, filterIncomesByMonth } from '@/utils/format';
+import { initialTags, getTags, selectTag } from '@/utils/tag';
 import { Button } from '@/components/ui/button';
 import { Label } from "@/components/ui/label";
 
@@ -20,11 +20,22 @@ async function getTotalSpent() {
   return data;
 }
 
+async function getTotalIncome() {
+  const result = await api.incomes["total-income"].$get();
+  const data = await result.json();
+  return data;
+}
+
 function Index() {
-  const { isPending, error, data } = useQuery({ queryKey: ['get-total-spent'], queryFn: getTotalSpent });
+  const { isPending: isPendingSpent, error: errorSpent, data: dataSpent } = useQuery({ queryKey: ['get-total-spent'], queryFn: getTotalSpent });
+  const { isPending: isPendingIncome, error: errorIncome, data: dataIncome } = useQuery({ queryKey: ['get-total-income'], queryFn: getTotalIncome });
+
   const [currentlyMonth, setCurrentlyMonth] = useState(new Date());
   const [expenses, setExpenses] = useState<any[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
+  const [incomes, setIncomes] = useState<any[]>([]);
+  const [filteredIncomes, setFilteredIncomes] = useState<any[]>([]);
+  
   const formattedMonth = formatMonth(currentlyMonth);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>('');
@@ -40,17 +51,30 @@ function Index() {
       }
     }
 
+    async function fetchIncomes() {
+      try {
+        const result = await api.incomes.$get();
+        const data = await result.json();
+        setIncomes(data.incomes);
+      } catch (error) {
+        console.error("Error fetching incomes", error);
+      }
+    }
+
     fetchExpenses();
+    fetchIncomes();
   }, [formattedMonth]);
 
   useEffect(() => {
     setTags(getTags());
-  },[]);
+  }, []);
 
   useEffect(() => {
-    let monthFiltered = filterExpensesByMonth(expenses, formattedMonth);
-    setFilteredExpenses(selectTag(monthFiltered, selectedTag)); // タグでフィルタリング
-  }, [expenses, currentlyMonth, selectedTag]);
+    let monthFilteredExpenses = filterExpensesByMonth(expenses, formattedMonth);
+    let monthFilteredIncomes = filterIncomesByMonth(incomes, formattedMonth);
+    setFilteredExpenses(selectTag(monthFilteredExpenses, selectedTag)); // タグでフィルタリング
+    setFilteredIncomes(selectTag(monthFilteredIncomes, selectedTag)); // タグでフィルタリング
+  }, [expenses, incomes, currentlyMonth, selectedTag]);
 
   const handlePreviousMonth = () => {
     setCurrentlyMonth(addMonths(currentlyMonth, -1));
@@ -67,14 +91,25 @@ function Index() {
 
   return (
     <>
-      <Card className="w-[350px] m-auto mb-8">
-        <CardHeader>
-          <CardTitle>合計金額</CardTitle>
-          <CardDescription>あなたの合計出費金額 </CardDescription>
-        </CardHeader>
-        <CardContent>{isPending ? "Loading..." : error ? "Error fetching total spent" : data?.total}</CardContent>
-        <CardFooter></CardFooter>
-      </Card>
+      <div className="flex justify-center space-x-4">
+        <Card className="w-[350px] mb-8">
+          <CardHeader>
+            <CardTitle>合計支出</CardTitle>
+            <CardDescription>あなたの合計支出金額</CardDescription>
+          </CardHeader>
+          <CardContent>{isPendingSpent ? "Loading..." : errorSpent ? "Error fetching total spent" : dataSpent?.total}</CardContent>
+          <CardFooter></CardFooter>
+        </Card>
+
+        <Card className="w-[350px] mb-8">
+          <CardHeader>
+            <CardTitle>合計収入</CardTitle>
+            <CardDescription>あなたの合計収入金額</CardDescription>
+          </CardHeader>
+          <CardContent>{isPendingIncome ? "Loading..." : errorIncome ? "Error fetching total income" : dataIncome?.total}</CardContent>
+          <CardFooter></CardFooter>
+        </Card>
+      </div>
 
       <CardFooter className="flex justify-center items-center gap-4">
         <Button onClick={handlePreviousMonth}>前月</Button>
@@ -134,7 +169,42 @@ function Index() {
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter></CardFooter>
+      </Card>
+
+      <Card className="w-[800px] m-auto mt-8">
+        <CardHeader>
+          <CardTitle>月別収入</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Id</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Tag</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredIncomes.length > 0 ? (
+                filteredIncomes.map(income => (
+                  <TableRow key={income.id}>
+                    <TableCell>{income.id}</TableCell>
+                    <TableCell>{income.date.split('T')[0]}</TableCell>
+                    <TableCell>{income.title}</TableCell>
+                    <TableCell>{income.amount}</TableCell>
+                    <TableCell>{income.tag}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">その月のデータはありません</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
       </Card>
     </>
   );
