@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Link } from '@tanstack/react-router';
 import { Button } from "@/components/ui/button";
 import { useForm } from '@tanstack/react-form';
 import type { FieldApi } from '@tanstack/react-form';
@@ -88,11 +89,13 @@ function CreateExpense() {
 
   return (
     <div className="p-2">
-      <h2>Create Expense</h2>
-      <form
-        className='max-w-xl m-auto'
-        onSubmit={form.handleSubmit}
-      >
+      <Link to="/create-expense" className='mb-4 text-white p-2 rounded'>
+        Create Expense
+      </Link>
+      <Link to="/create-income" className='mb-4 text-white p-2 rounded'>
+        Create Income
+      </Link>
+      <form className='max-w-xl m-auto' onSubmit={form.handleSubmit}>
         <div className="mb-4">
           <form.Field name="title">
             {(field: FieldApi<string>) => (
@@ -181,7 +184,7 @@ function CreateExpense() {
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (
             <Button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? '...' : 'Create'}
+              {isSubmitting ? '...' : '新規作成'}
             </Button>
           )}
         />
