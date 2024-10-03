@@ -40,6 +40,14 @@ function Index() {
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>('');
 
+  // 月別の支出/収入を表示する
+  const [monthlyExpenses, setMonthlyExpenses] = useState<{ [key: string]: number }>({});
+  const [monthlyIncomes, setMonthlyIncomes] = useState<{ [key: string]: number }>({});
+
+  // 合計を計算する
+  const totalExpenses = Object.values(monthlyExpenses).reduce((sum, value) => sum + value, 0);
+  const totalIncomes = Object.values(monthlyIncomes).reduce((sum, value) => sum + value, 0);
+
   useEffect(() => {
     async function fetchExpenses() {
       try {
