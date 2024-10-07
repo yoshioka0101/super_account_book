@@ -1,21 +1,23 @@
-import { Hono } from 'hono'
-import { logger } from 'hono/logger'
-import { expensesRoutes } from 'server/routes/expenses'
-import { serveStatic } from 'hono/bun'
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
+import { expensesRoutes } from 'server/routes/expenses';
+import { incomesRoutes } from 'server/routes/incomes';
+import { serveStatic } from 'hono/bun';
 
+const app = new Hono();
 
-const app = new Hono()
+app.use(logger());
 
-app.use(logger())
+app.get("/test", (c) => {
+    return c.json({ message: "test" });
+});
 
-app.get("/test", c => {
-    return c.json({"message": "test"})
-} )
+const apiRoutes = app.basePath("/api")
+    .route("/expenses", expensesRoutes)
+    .route("/incomes", incomesRoutes);
 
-const apiRoutes = app.basePath("/api").route("/expenses", expensesRoutes)
+app.use('*', serveStatic({ root: './frontend/dist' }));
+app.get('*', serveStatic({ path: './frontend/dist/index.html' }));
 
-app.use('*', serveStatic({ root: './frontend/dist' }))
-app.get('*', serveStatic({ path: './frontend/dist/index.html' }))
-
-export default app // for Cloudflare Workers or Bun
-export type ApiRoutes = typeof apiRoutes
+export default app;
+export type ApiRoutes = typeof apiRoutes;

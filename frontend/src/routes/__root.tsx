@@ -21,10 +21,7 @@ function NavBar() {
         Incomes
       </Link>
       <Link to="/create-expense" className="[&.active]:font-bold">
-        Create Expense
-      </Link>
-      <Link to="/create-income" className="[&.active]:font-bold">
-        Create income
+        Create
       </Link>
       <Link to="/expense-with-receipt" className="[&.active]:font-bold">
         Receipt
